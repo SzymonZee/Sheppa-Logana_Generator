@@ -1,0 +1,5 @@
+﻿  Elipsa.cpp
+  Sinogram.cpp
+C:\Users\48532\Desktop\Softwear_Developer_Jurney\Projects\TOM_LAB1\Sinogram.cpp(30,20): error C2065: "i": niezadeklarowany identyfikator
+C:\Users\48532\Desktop\Softwear_Developer_Jurney\Projects\TOM_LAB1\Sinogram.cpp(31,1): error C2143: błąd składniowy: brakuje „;” przed „}”
+  Generowanie kodu...
