@@ -2,15 +2,18 @@
 //
 
 #include <iostream>
-
+#include "Sinogram.h"
 
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	Sinogram S1{};
+	S1.createSinogram(256,300).sinogramScaling().saveSinogram();
+
+	return 0;
 }
 
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
+// 0Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
 // Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
 
 // Porady dotyczące rozpoczynania pracy:

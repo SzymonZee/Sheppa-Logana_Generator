@@ -25,10 +25,12 @@ Sinogram::Sinogram()
 }
 
 
+//implementation of equation Po(t) page 10
+
 double Sinogram::proj_normalna(int i,int angle)
 {    //2*roAB
 
-	// co to t
+	// 
 	
 	
 	auto paramAB = m_elipsa.at(i).m_parameter * m_elipsa.at(i).m_big_axis * m_elipsa.at(i).m_small_axis;
@@ -38,12 +40,11 @@ double Sinogram::proj_normalna(int i,int angle)
 	auto B_square = m_elipsa.at(i).m_small_axis * m_elipsa.at(i).m_small_axis;
 
 	auto a_suare_angle= A_square* pow(cos(angle), 2) + B_square * pow(sin(angle),2);
-
 	auto P_t = (2 * paramAB / a_suare_angle) * sqrt(a_suare_angle - t);
 
 	return P_t;
 };
-
+// implementation of equation Po'(t)
 double Sinogram::proj_dowolna(int i, int angle)
 {
 	auto x_square = m_elipsa.at(i).m_middle_x * m_elipsa.at(i).m_middle_x;
@@ -72,7 +73,7 @@ Sinogram& Sinogram::createSinogram(int widht, int height)
 		{
 			for (int k = 0; k < 10; k++)
 			{
-				this->sinogram[i][j] = proj_dowolna(k, angle);
+				this->sinogram[i][j] += proj_dowolna(k, angle);
 			}
          
 
@@ -84,6 +85,72 @@ Sinogram& Sinogram::createSinogram(int widht, int height)
 	return *this;
 }
 
+	
+	// finding max value in sinogram
+	
 
-Sinogram& Sinogram::scaling (lambda)
+Sinogram& Sinogram::sinogramScaling()
+{
+	int fp_max = this->sinogram[0][0];
+
+	for (int i = 0; i < 256; ++i)
+	{
+		for (int j = 0; j < 300; ++j)
+		{
+			if (this->sinogram[i][j] > fp_max)
+			{
+				fp_max = this->sinogram[i][j];
+			}
+
+
+		}
+	}
+	// finding min value in simogram
+	int fp_min = this->sinogram[0][0];
+	for (int i = 0; i < 256; ++i)
+	{
+		for (int j = 0; j < 300; ++j)
+		{
+			if (this->sinogram[i][j] > fp_min)
+			{
+				fp_min = this->sinogram[i][j];
+			}
+
+
+		}
+	}
+
+	auto k = 4095 / (fp_max - fp_min);
+	auto m = -fp_min * k;
+	//recalculate the data
+	for (int i = 0; i < 256; ++i)
+	{
+		for (int j = 0; j < 300; ++j)
+		{
+			if (this->sinogram[i][j] > fp_max)
+			{
+				this->sinogram[i][j] = this->sinogram[i][j] * k + m;
+			}
+
+
+		}
+	}
+}
+
+bool Sinogram::saveSinogram()
+{
+
+	std::ofstream sinogram_bin("sinogrma.bin", std::ios::binary);
+	if (!sinogram_bin)
+	{
+		std::cerr << "Nie otworzono pliku do zaoisu";
+		return 1;
+	}
+	sinogram_bin.write(reinterpret_cast<const char*>(sinogram), sizeof(sinogram));
+
+	return 0;
+}
+
+
+
 
