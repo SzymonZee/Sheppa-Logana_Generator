@@ -3,6 +3,11 @@
 #include <vector>
 #include <functional>
 #include <fstream>
+#include <cmath>
+
+#ifndef M_PI_
+#define M_PI_ 3.14159265358979323846
+#endif
 class Sinogram
 {
 
@@ -13,8 +18,8 @@ public:
 	int m_widht;
 	int m_lenght;
 
-	double proj_normalna(int i, int angle);
-	double proj_dowolna(int i, int angle);
+	double proj_normalna(int i, double angle,int t);
+	double proj_dowolna(int i, double angle, int t);
 	
 
 	Sinogram& createSinogram(int widht, int height);
@@ -22,7 +27,8 @@ public:
 
 	bool saveSinogram();
 
-	uint16_t sinogram[300][256];
+	double degreeToRad(double angle);
+	double sinogram[300][256]{};
 	std::vector<Elipsa>m_elipsa{};
 	
 };

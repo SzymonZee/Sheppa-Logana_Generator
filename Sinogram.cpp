@@ -26,13 +26,9 @@ Sinogram::Sinogram()
 
 
 //implementation of equation Po(t) page 10
-
-double Sinogram::proj_normalna(int i,int angle)
-{    //2*roAB
-
-	// 
-	
-	
+// lack of t 
+double Sinogram::proj_normalna(int i,double angle,int t)
+{    
 	auto paramAB = m_elipsa.at(i).m_parameter * m_elipsa.at(i).m_big_axis * m_elipsa.at(i).m_small_axis;
 
 	auto A_square = m_elipsa.at(i).m_big_axis   * m_elipsa.at(i).m_big_axis;
@@ -45,7 +41,7 @@ double Sinogram::proj_normalna(int i,int angle)
 	return P_t;
 };
 // implementation of equation Po'(t)
-double Sinogram::proj_dowolna(int i, int angle)
+double Sinogram::proj_dowolna(int i, double angle,int t)
 {
 	auto x_square = m_elipsa.at(i).m_middle_x * m_elipsa.at(i).m_middle_x;
 
@@ -54,26 +50,37 @@ double Sinogram::proj_dowolna(int i, int angle)
 	auto s = sqrt(x_square + y_square);
 
 	auto gamma = atan2(m_elipsa.at(i).m_middle_y, m_elipsa.at(i).m_middle_x);
+	//ad t
+	auto angle_ = t - s * cos(gamma - angle);
 
-	auto angle = t - s * cos(gamma - angle);
-
-	auto P_t_prim=proj_normalna(i, angle);
+	auto P_t_prim=proj_normalna(i, angle_, t);
 
 	return P_t_prim;
 
 
 };
 
+double Sinogram::degreeToRad(double angle)
+{
+	return angle * M_PI_ / 180;
+}
+
 Sinogram& Sinogram::createSinogram(int widht, int height)
 {
-	for (int i = 0; i < widht; i++)
+	double angle[300];
+	for (int i = 0; i < 300; ++i)
 	{
-		for (int j = 0; j < height; ++i)
+		angle[i] = degreeToRad(360 / 300) * i;
+	}
+	
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < widht; ++j)
 
 		{
-			for (int k = 0; k < 10; k++)
+			for (int k = 0; k < 10; ++k)
 			{
-				this->sinogram[i][j] += proj_dowolna(k, angle);
+				this->sinogram[i][j] += proj_dowolna(k, angle[j], height);
 			}
          
 
@@ -135,6 +142,7 @@ Sinogram& Sinogram::sinogramScaling()
 
 		}
 	}
+	return *this;
 }
 
 bool Sinogram::saveSinogram()
